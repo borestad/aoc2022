@@ -1,25 +1,15 @@
-#!/usr/bin/env zx
-/* eslint-disable no-console */
+#!/usr/bin/env zx --quiet
+import { echo, fs, path } from 'zx'
 
-import { fs, path } from 'zx'
-import { sum } from 'lodash-es'
-
-async function input() {
-  const input = await fs.readFile(path.resolve(__dirname, 'input.txt'), 'utf8')
-  return input
-    .split('\n\n')
-    .map(x => x.split('\n'))
+function sum(arr) {
+  return arr.reduce((sum, i) => sum + Number(i), 0)
 }
 
-const data = await input()
-const calories = data
-  .map(elf => elf.reduce((i, total) => i + Number(total), 0)) // Aggregate all calories
-  .sort((a, b) => b - a) // Sort numerical
+const calories = fs.readFileSync(path.join(__dirname, 'input.txt'), 'utf-8')
+  .split('\n\n')
+  .map(elf => elf.split('\n'))
+  .map(sum)
+  .sort((a, b) => b - a)
 
-console.dir(calories, { maxArrayLength: null })
-
-const answer1 = calories[0]
-const answer2 = sum(calories.slice(0, 3))
-
-console.log('1. Answer:', answer1)
-console.log('2. Answer:', answer2)
+echo('Answer 1:', calories[0])
+echo('Answer 2:', sum(calories.slice(0, 3)))
